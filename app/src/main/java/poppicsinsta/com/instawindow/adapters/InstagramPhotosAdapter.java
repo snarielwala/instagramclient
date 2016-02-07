@@ -22,9 +22,7 @@ import poppicsinsta.com.instawindow.R;
  */
 public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
-
     //Context and the data source
-
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
         super(context,android.R.layout.simple_list_item_1, objects);
     }
@@ -35,27 +33,37 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         InstagramPhoto photo = getItem(position);
 
         //check if we have a recycled view, if not we need to inflate
-        //lookup views for populating data
-        //return created item as a view
         if(convertView==null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
         }
+
+        //Find TextView for UserName
         TextView tvUserName= (TextView) convertView.findViewById(R.id.tvUname);
+        //Find TextView for Caption
         TextView tvCaption = (TextView)convertView.findViewById(R.id.tvCaption);
+        //Find TextView for Likes
         TextView tvLikes=(TextView)convertView.findViewById(R.id.tvLikes);
+
+        //Find Image View for Photo
         ImageView ivPhoto= (ImageView) convertView.findViewById(R.id.ivPhoto);
+
+        //Find Image View for Profile Photo
         ImageView ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
 
+        //Setting Text View texts from the model
         tvUserName.setText(photo.getUserName());
         tvCaption.setText(photo.getCaption());
         tvLikes.setText(photo.getLikesCount()+" likes");
 
+        //Clearing out the image resource
         ivPhoto.setImageResource(0);
         ivProfilePhoto.setImageResource(0);
-        //insert image using picasso
+
+        //Setting profile picture and image using picasso
         Picasso.with(getContext()).load(photo.getImageUrl()).fit().centerInside().into(ivPhoto);
         Picasso.with(getContext()).load(photo.getProfilePictureUrl()).transform(new CircleTransform()).into(ivProfilePhoto);
 
+        //return created view
         return convertView;
     }
 

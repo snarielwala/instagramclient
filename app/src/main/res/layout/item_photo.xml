@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivProfilePhoto"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:background="#ffffff"
+        android:maxHeight="10dp"
+        android:maxWidth="10dp"
+        android:minHeight="10dp"
+        android:minWidth="10dp"
+        android:paddingStart="5dp"
+        android:paddingBottom="5sp"
+        android:nestedScrollingEnabled="false"
+        android:adjustViewBounds="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="User Name"
+        android:id="@+id/tvUname"
+        android:textSize="19sp"
+        android:textStyle="bold"
+        android:textColor="#125688"
+        android:background="#ffffff"
+        android:paddingStart="3sp"
+        android:paddingTop="10sp"
+        android:typeface="sans"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ivProfilePhoto" />
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivPhoto"
+        android:adjustViewBounds="true"
+        android:paddingBottom="15sp"
+        android:layout_below="@+id/ivProfilePhoto"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Likes"
+        android:id="@+id/tvLikes"
+        android:textColor="#125688"
+        android:textStyle="bold"
+        android:paddingStart="15sp"
+        android:paddingTop="3sp"
+        android:paddingBottom="3sp"
+        android:drawableLeft="@drawable/likes"
+        android:drawablePadding="5dp"
+        android:layout_below="@+id/ivPhoto"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Caption"
+        android:id="@+id/tvCaption"
+        android:textColor="#4e575d"
+        android:textSize="15sp"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:background="#ffffff"
+        android:paddingStart="15sp"
+        android:paddingTop="5sp"
+        android:layout_below="@+id/tvLikes"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>

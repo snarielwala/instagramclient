@@ -3,12 +3,19 @@ package poppicsinsta.com.instawindow;
 /**
  * Created by snarielwala on 2/6/16.
  */
+
+/*
+    This class InstagramPhoto.com is a model class that stores all the
+    information to be displayed around one image in the view.
+
+ */
 public class InstagramPhoto {
 
     private String userName;
     private String caption;
     private String imageUrl;
     private String profilePictureUrl;
+
     private int likesCount;
     private int imgHeight;
     private int imgWidth;
@@ -28,9 +35,6 @@ public class InstagramPhoto {
     public void setImgWidth(int imgWidth) {
         this.imgWidth = imgWidth;
     }
-
-
-
 
     public String getUserName() {
         return userName;
