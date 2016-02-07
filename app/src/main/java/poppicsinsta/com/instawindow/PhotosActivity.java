@@ -21,6 +21,7 @@ import poppicsinsta.com.instawindow.adapters.InstagramPhotosAdapter;
 
 public class PhotosActivity extends AppCompatActivity {
 
+    public static final String instagramApi="https://api.instagram.com/v1/media/popular?client_id=";
     public static final String client_id="e05c462ebd86446ea48a5af73769b602";
     private ArrayList<InstagramPhoto> photos;
     private InstagramPhotosAdapter aPhotos;
@@ -53,9 +54,8 @@ public class PhotosActivity extends AppCompatActivity {
       /*Url:  https://api.instagram.com/v1/media/popular?client_id=e05c462ebd86446ea48a5af73769b602
 
         */
-        String url = "https://api.instagram.com/v1/media/popular?client_id="+client_id;
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(url,null, new JsonHttpResponseHandler(){
+        client.get(instagramApi+client_id,null, new JsonHttpResponseHandler(){
 
             //TA-DA .. it worked ! :)
 
@@ -69,25 +69,38 @@ public class PhotosActivity extends AppCompatActivity {
         Caption: data => [x] => “user” => “username”
              */
                 JSONArray photosJSON=null;
+                int i = 0;
                 try{
                     //get the photos array
                 photosJSON = response.getJSONArray("data");
 
                     //iterate through the array
-                    for(int i=0;i<photosJSON.length();i++){
+                    for(i=0;i<photosJSON.length();i++){
                         JSONObject photoJSON=photosJSON.getJSONObject(i);
                         InstagramPhoto photo=new InstagramPhoto();
-                        photo.username = photoJSON.getJSONObject("user").getString("username");
-                        //photo.caption=photoJSON.getJSONObject("caption").getString("text");
-                        //photo.imageUrl=photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url");
-                        //photo.imgHeight=photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("height");
-                        //photo.likesCount=photoJSON.getJSONObject("likes").getInt("count");
+                        photo.setUserName(photoJSON.getJSONObject("user").getString("username"));
+                        photo.setProfilePictureUrl(photoJSON.getJSONObject("user").getString("profile_picture"));
 
+
+                        //Log.i("DEBUG", photoJSON.toString());
+                        if(photoJSON.optJSONObject("caption")!=JSONObject.NULL)
+                        photo.setCaption(photoJSON.getJSONObject("caption").getString("text"));
+
+                        photo.setImageUrl(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url"));
+                        photo.setImgHeight(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("height"));
+                        photo.setImgWidth(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("width"));
+
+                        photo.setLikesCount(photoJSON.getJSONObject("likes").getInt("count"));
                         photos.add(photo);
                     }
                 }
                 catch (JSONException e){
-                    e.printStackTrace();
+                        try {
+                            e.printStackTrace();
+                            Log.e("Error", "JSON : " + e.getCause() +" JSON causign error: "+photosJSON.getJSONObject(i).toString());
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
+                        }
                 }
                 Log.i("DEBUG",response.toString());
                 aPhotos.notifyDataSetChanged();

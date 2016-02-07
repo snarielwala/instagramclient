@@ -10,5 +10,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/lvPhotos"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:dividerHeight="20sp"
+        android:divider="#ffffff"
+        android:background="#ffffff" />
 </RelativeLayout>
