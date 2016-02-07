@@ -1,6 +1,7 @@
 package poppicsinsta.com.instawindow;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,8 @@ public class PhotosActivity extends AppCompatActivity {
 
     //binding listview using butterknife
     @Bind(R.id.lvPhotos) ListView lvPhotos;
+    @Bind(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+
 
 
     @Override
@@ -37,7 +40,16 @@ public class PhotosActivity extends AppCompatActivity {
         setContentView(R.layout.photo_activity);
         ButterKnife.bind(this);
 
-        //Send Out API Request to Photos
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPopularPhotos();
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark);
+
+    //Send Out API Request to Photos
         photos=new ArrayList<>();
 
         //hook up the adapter to the data source
@@ -61,6 +73,8 @@ public class PhotosActivity extends AppCompatActivity {
             //TA-DA .. it worked ! :)
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                aPhotos.clear();
 
                 JSONArray photosJSON = null;
                 try {
@@ -95,8 +109,11 @@ public class PhotosActivity extends AppCompatActivity {
                     e.printStackTrace();
 
                 }
+                aPhotos.addAll(photos);
                 //notify the adapter that dataset has changed and that the view should be updated
                 aPhotos.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+
             }
 
             @Override
