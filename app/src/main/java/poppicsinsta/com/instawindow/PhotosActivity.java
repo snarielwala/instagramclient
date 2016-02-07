@@ -2,7 +2,6 @@ package poppicsinsta.com.instawindow;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -16,6 +15,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import cz.msebera.android.httpclient.Header;
 import poppicsinsta.com.instawindow.adapters.InstagramPhotosAdapter;
 
@@ -26,20 +27,21 @@ public class PhotosActivity extends AppCompatActivity {
     private ArrayList<InstagramPhoto> photos;
     private InstagramPhotosAdapter aPhotos;
 
+    //binding listview using butterknife
+    @Bind(R.id.lvPhotos) ListView lvPhotos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_activity);
+        ButterKnife.bind(this);
 
         //Send Out API Request to Photos
         photos=new ArrayList<>();
 
         //hook up the adapter to the data source
         aPhotos=new InstagramPhotosAdapter(this,photos);
-
-        //find the list view from the view
-        ListView lvPhotos=(ListView)findViewById(R.id.lvPhotos);
 
         //bind adapter to listview
         lvPhotos.setAdapter(aPhotos);
@@ -49,60 +51,51 @@ public class PhotosActivity extends AppCompatActivity {
 
         }
 
-    //Sending a Request to the Instagram API
+    //fetching popular photos and adding them to the data source
     private void fetchPopularPhotos(){
-      /*Url:  https://api.instagram.com/v1/media/popular?client_id=e05c462ebd86446ea48a5af73769b602
 
-        */
+        //Sending a Request to the Instagram API
         AsyncHttpClient client = new AsyncHttpClient();
-        client.get(instagramApi+client_id,null, new JsonHttpResponseHandler(){
+        client.get(instagramApi + client_id, null, new JsonHttpResponseHandler() {
 
             //TA-DA .. it worked ! :)
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-            /*
-            Type: data => [x] => type (“image” or “photo")
-                Photo Url: data=>[x] => “images” => “standard_resoultion” => “url”
-        Username: data => [x] => “caption” => “text”
 
-        Caption: data => [x] => “user” => “username”
-             */
-                JSONArray photosJSON=null;
-                int i = 0;
-                try{
+                JSONArray photosJSON = null;
+                try {
                     //get the photos array
-                photosJSON = response.getJSONArray("data");
+                    photosJSON = response.getJSONArray("data");
 
                     //iterate through the array
-                    for(i=0;i<photosJSON.length();i++){
-                        JSONObject photoJSON=photosJSON.getJSONObject(i);
-                        InstagramPhoto photo=new InstagramPhoto();
+                    for (int i = 0; i < photosJSON.length(); i++) {
+
+                        JSONObject photoJSON = photosJSON.getJSONObject(i);
+
+                        InstagramPhoto photo = new InstagramPhoto();
+
+                        //parsing the username from the json
                         photo.setUserName(photoJSON.getJSONObject("user").getString("username"));
+                        //parsing the profile picture url from the json
                         photo.setProfilePictureUrl(photoJSON.getJSONObject("user").getString("profile_picture"));
-
-
-                        //Log.i("DEBUG", photoJSON.toString());
-                        if(photoJSON.optJSONObject("caption")!=JSONObject.NULL)
+                        //parsing the caption from the json
                         photo.setCaption(photoJSON.getJSONObject("caption").getString("text"));
-
+                        //parsing the photo url from the json
                         photo.setImageUrl(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url"));
+                        //parsing the height of the image from the json
                         photo.setImgHeight(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("height"));
+                        //parsing the width of the image from the json
                         photo.setImgWidth(photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("width"));
-
+                        //parsing the number of likes from the json
                         photo.setLikesCount(photoJSON.getJSONObject("likes").getInt("count"));
+
                         photos.add(photo);
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
                 }
-                catch (JSONException e){
-                        try {
-                            e.printStackTrace();
-                            Log.e("Error", "JSON : " + e.getCause() +" JSON causign error: "+photosJSON.getJSONObject(i).toString());
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
-                        }
-                }
-                Log.i("DEBUG",response.toString());
+                //notify the adapter that dataset has changed and that the view should be updated
                 aPhotos.notifyDataSetChanged();
             }
 

@@ -1,7 +1,6 @@
 package poppicsinsta.com.instawindow.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import poppicsinsta.com.instawindow.CircleTransform;
 import poppicsinsta.com.instawindow.InstagramPhoto;
 import poppicsinsta.com.instawindow.R;
@@ -24,47 +25,65 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
 
     //Context and the data source
     public InstagramPhotosAdapter(Context context, List<InstagramPhoto> objects) {
-        super(context,android.R.layout.simple_list_item_1, objects);
+        super(context, android.R.layout.simple_list_item_1, objects);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        ViewHolder holder;
+
         //get data item for this position
         InstagramPhoto photo = getItem(position);
 
         //check if we have a recycled view, if not we need to inflate
-        if(convertView==null) {
+        if (convertView != null) {
+            holder = (ViewHolder) convertView.getTag();
+        } else {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
+            holder = new ViewHolder(convertView);
+            convertView.setTag(holder);
         }
 
-        //Find TextView for UserName
-        TextView tvUserName= (TextView) convertView.findViewById(R.id.tvUname);
-        //Find TextView for Caption
-        TextView tvCaption = (TextView)convertView.findViewById(R.id.tvCaption);
-        //Find TextView for Likes
-        TextView tvLikes=(TextView)convertView.findViewById(R.id.tvLikes);
-
-        //Find Image View for Photo
-        ImageView ivPhoto= (ImageView) convertView.findViewById(R.id.ivPhoto);
-
-        //Find Image View for Profile Photo
-        ImageView ivProfilePhoto = (ImageView) convertView.findViewById(R.id.ivProfilePhoto);
-
         //Setting Text View texts from the model
-        tvUserName.setText(photo.getUserName());
-        tvCaption.setText(photo.getCaption());
-        tvLikes.setText(photo.getLikesCount()+" likes");
+        holder.tvUserName.setText(photo.getUserName());
+        holder.tvCaption.setText(photo.getCaption());
+        holder.tvLikes.setText(photo.getLikesCount() + " likes");
 
         //Clearing out the image resource
-        ivPhoto.setImageResource(0);
-        ivProfilePhoto.setImageResource(0);
+        holder.ivPhoto.setImageResource(0);
+        holder.ivProfilePhoto.setImageResource(0);
 
         //Setting profile picture and image using picasso
-        Picasso.with(getContext()).load(photo.getImageUrl()).fit().centerInside().into(ivPhoto);
-        Picasso.with(getContext()).load(photo.getProfilePictureUrl()).transform(new CircleTransform()).into(ivProfilePhoto);
+        Picasso.with(getContext()).load(photo.getImageUrl()).fit().centerInside().into(holder.ivPhoto);
+        Picasso.with(getContext()).load(photo.getProfilePictureUrl()).transform(new CircleTransform()).into(holder.ivProfilePhoto);
 
         //return created view
         return convertView;
+    }
+
+    //static innter class facilitates usage of butterknife
+    static class ViewHolder {
+
+        @Bind(R.id.tvUname)
+        TextView tvUserName;
+
+        @Bind(R.id.tvCaption)
+        TextView tvCaption;
+
+        @Bind(R.id.tvLikes)
+        TextView tvLikes;
+
+        @Bind(R.id.ivPhoto)
+        ImageView ivPhoto;
+
+        @Bind(R.id.ivProfilePhoto)
+        ImageView ivProfilePhoto;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+
     }
 
 }
