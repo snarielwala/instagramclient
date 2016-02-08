@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import poppicsinsta.com.instawindow.CircleTransform;
+import poppicsinsta.com.instawindow.DeviceDimensionsHelper;
 import poppicsinsta.com.instawindow.InstagramPhoto;
 import poppicsinsta.com.instawindow.R;
 
@@ -31,6 +32,7 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        //view holder cache for the view items
         ViewHolder holder;
 
         //get data item for this position
@@ -54,8 +56,13 @@ public class InstagramPhotosAdapter extends ArrayAdapter<InstagramPhoto> {
         holder.ivPhoto.setImageResource(0);
         holder.ivProfilePhoto.setImageResource(0);
 
+       // int displayWidth = DeviceDimensionsHelper.getDisplayWidth(getContext());
+       // int displayHeight = (displayWidth)*((photo.getImgHeight())/photo.getImgWidth());
+
+      //      holder.ivPhoto.getLayoutParams().height = displayHeight;
+
         //Setting profile picture and image using picasso
-        Picasso.with(getContext()).load(photo.getImageUrl()).fit().centerInside().into(holder.ivPhoto);
+        Picasso.with(getContext()).load(photo.getImageUrl()).placeholder(R.drawable.placeholder).into(holder.ivPhoto);
         Picasso.with(getContext()).load(photo.getProfilePictureUrl()).transform(new CircleTransform()).into(holder.ivProfilePhoto);
 
         //return created view
